@@ -1,3 +1,4 @@
+// variable for the UI element on which I will bind events
 const form = document.querySelector('#task-form');          // form for tasks
 const taskInput = document.querySelector('#task');          // input for tasks
 const filter =  document.querySelector('#filter');          // filter input
@@ -7,7 +8,7 @@ const clearBtn = document.querySelector('.clear-tasks');    // clear tasks butto
 // load all event listners
 loadEventListerners();
 
-
+// emmiting all the events within this funciton'f scope
 function loadEventListerners() {
     // locd tasks
     document.addEventListener('DOMContentLoaded', getTasks);
@@ -34,27 +35,29 @@ function getTasks() {
         tasks = JSON.parse(localStorage.getItem('tasks'));
     }
 
-    tasks.forEach((task) => {
-        // create list item
-        const li = document.createElement('li');
-        // adding class to the list item
-        li.className = 'collection-item';
-        // append the task text to the li
-        li.appendChild(document.createTextNode(task));
+    tasks.forEach(
+        (task) => {
+            // create list item
+            const li = document.createElement('li');
+            // adding class to the list item
+            li.className = 'collection-item';
+            // append the task text to the li
+            li.appendChild(document.createTextNode(task));
 
-        // create a link
-        const link = document.createElement('a');
-        // adding class to the link
-        link.className = 'delete-item secondary-content';
-        // adding icon inside the link tag
-        link.innerHTML = `<i class="fa fa-remove"></i>`;
+            // create a link
+            const link = document.createElement('a');
+            // adding class to the link
+            link.className = 'delete-item secondary-content';
+            // adding icon inside the link tag
+            link.innerHTML = `<i class="fa fa-remove"></i>`;
 
-        // append link to the li
-        li.appendChild(link);
+            // append link to the li
+            li.appendChild(link);
 
-        // append the whole li to the ul
-        taskList.appendChild(li);
-    });
+            // append the whole li to the ul
+            taskList.appendChild(li);
+        }
+    );
 }
 
 // adding a task
@@ -117,10 +120,11 @@ function storeTask(task) {
 function removeTask(e) {
     if (e.target.parentElement.classList.contains('delete-item')) {
         if (confirm('Are you sure?')) {
-            // removing from the DOM
-            e.target.parentElement.parentElement.remove();
-            // calling a funciton to remove item from local storage also
-            removeTaskFromLS(e.target.parentElement.parentElement);
+            const selectedListItem = e.target.parentElement.parentElement;
+            // removing the selected item from the DOM
+            selectedListItem.remove();
+            // calling a funciton to remove the item from local storage also
+            removeTaskFromLS(selectedListItem);
         }
     }
 }
@@ -138,11 +142,13 @@ function removeTaskFromLS(taskItem) {
         tasks = JSON.parse(localStorage.getItem('tasks'));
     }
 
-    tasks.forEach((task, index) => {
-        if (taskItem.textContent === task) {
-            tasks.splice(index, 1);
+    tasks.forEach(
+        (task, index) => {
+            if (taskItem.textContent === task) {
+                tasks.splice(index, 1);
+            }
         }
-    });
+    );
 
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
@@ -166,12 +172,14 @@ function filterTasks(e) {
     const text = e.target.value.toLowerCase();
     const tasks = document.querySelectorAll('.collection-item');
 
-    tasks.forEach((task) => {
-        const item = task.firstChild.textContent;
+    tasks.forEach(
+        (task) => {
+            const item = task.firstChild.textContent;
 
-        if (item.toLowerCase().indexOf(text) !== -1) {
-            task.style.display = 'block';
-        } else task.style.display = 'none';
-    });
+            if (item.toLowerCase().indexOf(text) !== -1) {
+                task.style.display = 'block';
+            } else task.style.display = 'none';
+        }
+    );
 
 }
